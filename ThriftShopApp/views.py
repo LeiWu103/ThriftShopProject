@@ -39,10 +39,13 @@ class GoodsDetail(generics.ListAPIView):
     #由商品id返回商品详细信息，无id返回全部商品信息
     serializer_class = GoodsDetailSerializer
     permission_classes = (permissions.AllowAny,)
-    def get_queryset(self,validated_data):
-        goods_id=validated_data['id']
+    def get_queryset(self):
+        goods_id=self.request.query_params.get('itemID',None)
         if goods_id is not None:
             queryset=Goods.objects.filter(id=goods_id)
+            click=queryset.first().click
+            click=click
+            queryset.update(click=click)
         else:
             queryset=Goods.objects.all()
         return queryset
@@ -60,7 +63,6 @@ class GoodsListByCategory(generics.ListAPIView):
 
         if category_id is not None:
             queryset=Goods.objects.filter(category=Category.objects.filter(id=category_id).first())
-            print(queryset)
         else:
             queryset=Goods.objects.all()
         return queryset
@@ -75,6 +77,7 @@ class GoodsSelect(generics.ListAPIView):
     ordering=('id')
     def get_queryset(self):
         keyword=self.request.query_params.get('keyword',None)
+        print(self.request.query_params)
         if keyword is not None:
             queryset=Goods.objects.filter(Q(name__icontains=keyword)|Q(brief__icontains=keyword))
         else:

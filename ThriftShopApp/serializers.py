@@ -23,12 +23,14 @@ class GoodsSerializer(serializers.ModelSerializer):
     seller=UserSerializer()
     class Meta:
         model=Goods
-        fields=('id','name','category','price','image','seller')
-        #fields=('__all__')
+        #fields=('id','name','category','price','image','seller')
+        fields=('__all__')
 
 class GoodsDetailSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+    seller = UserSerializer()
     class Meta:
-        model=ID
+        model=Goods
         fields=('__all__')
 
 class OrderSerializer(serializers.ModelSerializer):

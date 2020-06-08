@@ -56,7 +56,7 @@ class Address(models.Model):
     signer=models.CharField('收件人',max_length=20)
     location=models.CharField('位置',max_length=500)
     mobile=models.CharField('手机号',max_length=16)
-    contact = models.CharField('联系方式', max_length=30)
+    # contact = models.CharField('联系方式', max_length=30)
     add_time=models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table='Address'
@@ -69,7 +69,3 @@ class Profile(models.Model):
     class Meta:
         db_table = 'Profile'
 
-class ID(models.Model):
-    id=models.IntegerField('id',primary_key=True)
-    class Meta:
-        db_table='ID'
