@@ -11,6 +11,7 @@ from .models import *
 from rest_framework.decorators import action
 import datetime
 from django.db.models import Q
+import random
 
 # class UserViewset(viewsets.ModelViewSet):
 #     serializer_class = UserSerializer
@@ -129,6 +130,23 @@ class LoginView(generics.RetrieveAPIView):
         except:
             return None
 
+class OrderCreatView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderCreateSerializer
+    permission_classes = (permissions.AllowAny,)
 
+    def perform_create(self, serializer):
+        print(serializer.validated_data)
+        user=serializer.validated_data.get('buyer')
+        goods=serializer.validated_data.get('goods')
+        message=serializer.validated_data.get('message')
+        contact=serializer.validated_data.get('contact')
+        address=serializer.validated_data.get('address')
+        serializer.save(buyer=user,cost=goods.price,status='pending',order_sn=random.randint(100000,1000000),message=message,contact=contact,address=address)
+        if goods.amount>=1:
+            goods.amount-=1
+        else:
+            goods.amount=0
+        goods.save()
 
 

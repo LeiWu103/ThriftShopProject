@@ -43,6 +43,7 @@ class Goods(models.Model):
 class Order(models.Model):
     buyer=models.ForeignKey('User',on_delete=models.CASCADE,related_name='buyer')
     goods=models.ForeignKey('Goods',on_delete=models.CASCADE)
+    address = models.ForeignKey('Address', on_delete=models.CASCADE)
     order_sn=models.IntegerField('订单号',unique=True,null=False)
     status=models.CharField('订单状态',max_length=10)
     cost=models.FloatField('订单金额')

@@ -68,12 +68,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields=('__all__')
 
 
-class OrderCreateSerializer(serializers.HyperlinkedModelSerializer):
+class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('buyer','goods','message')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('id','buyer','goods','address','contact','message','cost','status','order_sn')
+        read_only_fields=('price','cost','status','order_sn',)
 
-        def create(self, validated_data):
-            user = User(**validated_data)
-            return user
+

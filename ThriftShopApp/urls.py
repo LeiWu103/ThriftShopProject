@@ -10,5 +10,6 @@ urlpatterns=[
     url(r'^UserCreate/$',views.UserCreateView.as_view(),name='Goods-detail'),
     url(r'^AddressList/$',views.AddressListView.as_view(),name='Address-detail'),
     url(r'^ProfileRUView/$',views.ProfileRUView.as_view(),name='Address-detail'),
-    url(r'^LoginInfo/$',views.LoginView.as_view(),name='Login-detail')
+    url(r'^LoginInfo/$',views.LoginView.as_view(),name='Login-detail'),
+    url(r'^OrderCreate/$',views.OrderCreatView.as_view(),name='Order-detail'),
 ]
