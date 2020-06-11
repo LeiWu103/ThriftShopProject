@@ -5,6 +5,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model=User
         fields=('id','username')
+
 class VerifyCodeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -40,6 +41,9 @@ class OrderSerializer(serializers.ModelSerializer):
         model=Goods
         fields=('__all__')
 
+
+
+
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -48,9 +52,28 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs={'password':{'write_only':True}}
         def create(self,validated_data):
             user=User(**validated_data)
-            user.set_password(validated_data['password'])
-            user.save()
-            user_profile=Profile(user)
-            user_profile.set_user(validated_data.pop('username'))
-            user_profile.save()
-            return user,user_profile
+            return user
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    class Meta:
+        model=Address
+        fields=('user','signer','location','mobile')
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user=UserSerializer
+    class Meta:
+        model=Profile
+        fields=('__all__')
+
+
+class OrderCreateSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('buyer','goods','message')
+        extra_kwargs = {'password': {'write_only': True}}
+
+        def create(self, validated_data):
+            user = User(**validated_data)
+            return user

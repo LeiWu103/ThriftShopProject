@@ -43,9 +43,10 @@ class GoodsDetail(generics.ListAPIView):
         goods_id=self.request.query_params.get('itemID',None)
         if goods_id is not None:
             queryset=Goods.objects.filter(id=goods_id)
-            click=queryset.first().click
-            click=click
-            queryset.update(click=click)
+            goods_obj=queryset.first()
+            print(goods_obj)
+            goods_obj.click+=1
+            goods_obj.save()
         else:
             queryset=Goods.objects.all()
         return queryset
@@ -57,7 +58,7 @@ class GoodsListByCategory(generics.ListAPIView):
     filter_backends = (SearchFilter,OrderingFilter)
     search_fields=('detail')
     ordering_fields=('__all__')
-    ordering=('id')
+    ordering=('-click')
     def get_queryset(self):
         category_id=self.request.query_params.get('category',None)
 
@@ -66,6 +67,7 @@ class GoodsListByCategory(generics.ListAPIView):
         else:
             queryset=Goods.objects.all()
         return queryset
+
 
 class GoodsSelect(generics.ListAPIView):
     #商品查询接口，商品名、简介模糊查询
@@ -77,7 +79,6 @@ class GoodsSelect(generics.ListAPIView):
     ordering=('id')
     def get_queryset(self):
         keyword=self.request.query_params.get('keyword',None)
-        print(self.request.query_params)
         if keyword is not None:
             queryset=Goods.objects.filter(Q(name__icontains=keyword)|Q(brief__icontains=keyword))
         else:
@@ -91,5 +92,43 @@ class CategoryListView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
 
 class UserCreateView(generics.CreateAPIView):
-    #商品种类列表
+    #注册
     serializer_class = UserCreateSerializer
+
+
+class AddressListView(generics.ListAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = (permissions.AllowAny,)
+    def get_queryset(self):
+        user_id=self.request.query_params.get('userID',None)
+        if user_id is not None:
+            queryset=Address.objects.filter(user=User.objects.filter(id=user_id).first())
+        else:
+            queryset=None
+        return queryset
+
+class ProfileRUView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.AllowAny,)
+    def get_object(self):
+        profile=Profile.objects.get(user=User.objects.get(id=self.request.query_params('id',None)))
+        return profile
+
+class LoginView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (permissions.AllowAny,)
+    def get_object(self):
+        username=self.request.query_params.get('username',None)
+        password=self.request.query_params.get('password',None)
+        try:
+            user=User.objects.get(username=username)
+            if user.password==password:
+                return user
+            else:
+                return None
+        except:
+            return None
+
+
+
+

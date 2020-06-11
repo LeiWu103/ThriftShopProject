@@ -29,7 +29,7 @@ class Goods(models.Model):
     seller=models.ForeignKey('User',on_delete=models.CASCADE)
     name=models.CharField('商品名',max_length=30)
     amount=models.IntegerField('商品数量')
-    click=models.IntegerField('点击量')
+    click=models.IntegerField('点击量',default=0)
     price=models.FloatField('单价')
     brief=models.CharField('简介',max_length=1000)
     image=models.CharField('商品图片',max_length=300)
@@ -47,6 +47,7 @@ class Order(models.Model):
     status=models.CharField('订单状态',max_length=10)
     cost=models.FloatField('订单金额')
     message=models.CharField('订单留言',max_length=200)
+    contact = models.CharField('联系方式', max_length=30)
     add_time=models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table='Order'
