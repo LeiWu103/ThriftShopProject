@@ -95,7 +95,15 @@ class CategoryListView(generics.ListAPIView):
 class UserCreateView(generics.CreateAPIView):
     #注册
     serializer_class = UserCreateSerializer
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,)
 
+    def perform_create(self, serializer):
+        print(self.request.data)
+        name = serializer.validated_data.get('username')
+        password = serializer.validated_data.get('password')
+        mobile = serializer.validated_data.get('mobile')
+        serializer.save(username=name,password=password,mobile=mobile)
 
 class AddressListView(generics.ListAPIView):
     serializer_class = AddressSerializer
@@ -119,6 +127,7 @@ class LoginView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny,)
     def get_object(self):
+        print(self.request.query_params)
         username=self.request.query_params.get('username',None)
         password=self.request.query_params.get('password',None)
         try:
@@ -136,7 +145,7 @@ class OrderCreatView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
 
     def perform_create(self, serializer):
-        print(serializer.validated_data)
+        print(self.request.data)
         user=serializer.validated_data.get('buyer')
         goods=serializer.validated_data.get('goods')
         message=serializer.validated_data.get('message')
@@ -148,5 +157,6 @@ class OrderCreatView(generics.CreateAPIView):
         else:
             goods.amount=0
         goods.save()
+
 
 

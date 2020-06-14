@@ -49,17 +49,14 @@ class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model=User
         fields=('id','username','password','mobile')
-        extra_kwargs={'password':{'write_only':True}}
-        def create(self,validated_data):
-            user=User(**validated_data)
-            return user
+
 
 
 class AddressSerializer(serializers.ModelSerializer):
     user=UserSerializer()
     class Meta:
         model=Address
-        fields=('user','signer','location','mobile')
+        fields=('id','user','signer','location','mobile')
 
 class ProfileSerializer(serializers.ModelSerializer):
     user=UserSerializer
@@ -69,6 +66,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Order
         fields = ('id','buyer','goods','address','contact','message','cost','status','order_sn')
