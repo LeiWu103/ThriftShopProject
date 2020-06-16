@@ -9,6 +9,8 @@ class User(models.Model):
     add_time=models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table='User'
+        verbose_name='用户'
+        verbose_name_plural = verbose_name
 
 class VerifyCode(models.Model):
     code=models.CharField('验证码',max_length=50,null=False)
@@ -16,6 +18,8 @@ class VerifyCode(models.Model):
     add_time = models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table = 'VerifyCode'
+        verbose_name='验证码'
+        verbose_name_plural = verbose_name
 
 class Category(models.Model):
     name=models.CharField('类别名',max_length=30)
@@ -23,10 +27,12 @@ class Category(models.Model):
 
     class Meta:
         db_table='Category'
+        verbose_name='种类'
+        verbose_name_plural = verbose_name
 
 class Goods(models.Model):
-    category=models.ForeignKey('Category',on_delete=models.CASCADE)
-    seller=models.ForeignKey('User',on_delete=models.CASCADE)
+    category=models.ForeignKey('Category',on_delete=models.CASCADE,verbose_name='分类')
+    seller=models.ForeignKey('User',on_delete=models.CASCADE,verbose_name='卖家')
     name=models.CharField('商品名',max_length=30)
     amount=models.IntegerField('商品数量')
     click=models.IntegerField('点击量',default=0)
@@ -39,11 +45,13 @@ class Goods(models.Model):
     add_time=models.DateTimeField('加入时间',default=timezone.now())
     class Meta:
         db_table='Goods'
+        verbose_name='商品'
+        verbose_name_plural = verbose_name
 
 class Order(models.Model):
-    buyer=models.ForeignKey('User',on_delete=models.CASCADE,related_name='buyer')
-    goods=models.ForeignKey('Goods',on_delete=models.CASCADE)
-    address = models.ForeignKey('Address', on_delete=models.CASCADE)
+    buyer=models.ForeignKey('User',on_delete=models.CASCADE,related_name='buyer',verbose_name='买家')
+    goods=models.ForeignKey('Goods',on_delete=models.CASCADE,verbose_name='商品')
+    address = models.ForeignKey('Address', on_delete=models.CASCADE,verbose_name='地址')
     order_sn=models.IntegerField('订单号',unique=True,null=False)
     status=models.CharField('订单状态',max_length=10)
     cost=models.FloatField('订单金额')
@@ -52,9 +60,11 @@ class Order(models.Model):
     add_time=models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table='Order'
+        verbose_name='订单'
+        verbose_name_plural = verbose_name
 
 class Address(models.Model):
-    user=models.ForeignKey('User',on_delete=models.CASCADE)
+    user=models.ForeignKey('User',on_delete=models.CASCADE,verbose_name='用户')
     signer=models.CharField('收件人',max_length=20)
     location=models.CharField('位置',max_length=500)
     mobile=models.CharField('手机号',max_length=16)
@@ -62,12 +72,16 @@ class Address(models.Model):
     add_time=models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table='Address'
+        verbose_name='地址'
+        verbose_name_plural = verbose_name
 
 class Profile(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.ForeignKey('User', on_delete=models.CASCADE,verbose_name='用户')
     bio=models.CharField('签名',max_length=1000)
     email=models.EmailField('邮箱')
     add_time = models.DateTimeField('添加时间', default=timezone.now())
     class Meta:
         db_table = 'Profile'
+        verbose_name='简介'
+        verbose_name_plural = verbose_name
 
