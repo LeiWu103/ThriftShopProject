@@ -38,7 +38,7 @@ class Goods(models.Model):
     click=models.IntegerField('点击量',default=0)
     price=models.FloatField('单价')
     brief=models.CharField('简介',max_length=1000)
-    image=models.CharField('商品图片',max_length=300)
+    image=models.ImageField('商品图片',upload_to='images')
     transaction=models.SmallIntegerField('交易方式')
     payment=models.BooleanField('交易方式',default=True)
     postage=models.FloatField('运费')

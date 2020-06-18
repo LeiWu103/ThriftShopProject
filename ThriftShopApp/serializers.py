@@ -6,6 +6,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model=User
         fields=('id','username')
 
+
 class VerifyCodeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:

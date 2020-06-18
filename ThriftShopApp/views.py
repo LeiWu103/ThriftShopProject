@@ -1,9 +1,9 @@
-
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
 from requests import Response
-from rest_framework import viewsets, generics,permissions
+from rest_framework import viewsets, generics, permissions, response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListCreateAPIView
 from .serializers import *
@@ -13,28 +13,6 @@ import datetime
 from django.db.models import Q
 import random
 
-# class UserViewset(viewsets.ModelViewSet):
-#     serializer_class = UserSerializer
-#     queryset = User.objects.all()
-#
-#     @action(methods=['get','POST'],detail=True)
-#     def rigister_user(self,request,pk=None):
-#
-#         user=self.get_object()
-#         user.objects=request.data
-#         #user.add_time=datetime.datetime.strftime('%Y/%m/% %H:%M',datetime.datetime.now())
-#         print(user)
-#         user.save()
-#         serializer=self.get_serializer(user)
-#         return Response(serializer.data)
-#
-#     @action(methods=['get','put'],detail=True)
-#     def change_password(self,request):
-#         user=self.get_object()
-#         user.password=request.data.get('password')
-#         user.save()
-#         serializer=self.get_serializer(UserSerializer)
-#         return Response(serializer.data)
 
 class GoodsDetail(generics.ListAPIView):
     #由商品id返回商品详细信息，无id返回全部商品信息
@@ -92,6 +70,8 @@ class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     permission_classes = (permissions.AllowAny,)
 
+
+
 class UserCreateView(generics.CreateAPIView):
     #注册
     serializer_class = UserCreateSerializer
@@ -123,9 +103,12 @@ class ProfileRUView(generics.RetrieveUpdateAPIView):
         profile=Profile.objects.get(user=User.objects.get(id=self.request.query_params('id',None)))
         return profile
 
+
+
 class LoginView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny,)
+
     def get_object(self):
         print(self.request.query_params)
         username=self.request.query_params.get('username',None)
@@ -138,6 +121,8 @@ class LoginView(generics.RetrieveAPIView):
                 return None
         except:
             return None
+
+
 
 class OrderCreatView(generics.CreateAPIView):
     queryset = Order.objects.all()
@@ -157,6 +142,8 @@ class OrderCreatView(generics.CreateAPIView):
         else:
             goods.amount=0
         goods.save()
+
+
 
 
 
