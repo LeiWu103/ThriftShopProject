@@ -12,4 +12,6 @@ urlpatterns=[
     url(r'^ProfileRUView/$',views.ProfileRUView.as_view(),name='Address-detail'),
     url(r'^LoginInfo/$',views.LoginView.as_view(),name='Login-detail'),
     url(r'^OrderCreate/$',views.OrderCreatView.as_view(),name='Order-detail'),
+    url(r'^MySellGoods/$',views.MySellGoodsList.as_view(),name='Goods-detail'),
+    url(r'^MyBuyGoods/$',views.MyBuyGoodsList.as_view(),name='Goods-detail'),
 ]
