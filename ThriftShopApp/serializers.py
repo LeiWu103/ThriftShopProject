@@ -42,14 +42,19 @@ class OrderSerializer(serializers.ModelSerializer):
         fields=('__all__')
 
 
-
-
-
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
-        model=User
-        fields=('id','username','password','mobile')
+        model = User
+        fields = ('id', 'username', 'password', 'mobile')
+
+
+class ProfileCreateSerializer(serializers.HyperlinkedModelSerializer):
+    user=UserCreateSerializer()
+    class Meta:
+        model = Profile
+        fields = ('user',)
+
+
 
 
 

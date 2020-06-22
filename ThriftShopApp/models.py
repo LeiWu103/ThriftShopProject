@@ -3,23 +3,23 @@ from django.utils import timezone
 
 # Create your models here.
 class User(models.Model):
-    username=models.CharField('用户名',max_length=30)
+    username=models.CharField('用户名',max_length=30,unique=True)
     password=models.CharField('用户密码',max_length=50)
-    mobile=models.CharField('手机号',max_length=16)
+    mobile=models.CharField('手机号',max_length=16,unique=True)
     add_time=models.DateTimeField('添加时间',default=timezone.now())
     class Meta:
         db_table='User'
         verbose_name='用户'
         verbose_name_plural = verbose_name
 
-class VerifyCode(models.Model):
-    code=models.CharField('验证码',max_length=50,null=False)
-    mobile=models.CharField('手机号',max_length=16,null=False)
-    add_time = models.DateTimeField('添加时间',default=timezone.now())
-    class Meta:
-        db_table = 'VerifyCode'
-        verbose_name='验证码'
-        verbose_name_plural = verbose_name
+# class VerifyCode(models.Model):
+#     code=models.CharField('验证码',max_length=50,null=False)
+#     mobile=models.CharField('手机号',max_length=16,null=False)
+#     add_time = models.DateTimeField('添加时间',default=timezone.now())
+#     class Meta:
+#         db_table = 'VerifyCode'
+#         verbose_name='验证码'
+#         verbose_name_plural = verbose_name
 
 class Category(models.Model):
     name=models.CharField('类别名',max_length=30)
@@ -78,7 +78,7 @@ class Address(models.Model):
 class Profile(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE,verbose_name='用户')
     bio=models.CharField('签名',max_length=1000)
-    email=models.EmailField('邮箱')
+    email=models.EmailField('邮箱',unique=True)
     add_time = models.DateTimeField('添加时间', default=timezone.now())
     class Meta:
         db_table = 'Profile'

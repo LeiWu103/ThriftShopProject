@@ -1,18 +1,10 @@
-from django.http import JsonResponse
-from django.shortcuts import render
-
-# Create your views here.
-from requests import Response
-from rest_framework import viewsets, generics, permissions, response
+from rest_framework import generics, permissions
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import ListCreateAPIView
 from .serializers import *
 from .models import *
-from rest_framework.decorators import action
-import datetime
 from django.db.models import Q
 import random
-from drf_multiple_model.views import ObjectMultipleModelAPIView
+from drf_multiple_model.views import *
 
 
 class GoodsDetail(generics.ListAPIView):
@@ -97,6 +89,8 @@ class UserCreateView(generics.CreateAPIView):
         password = serializer.validated_data.get('password')
         mobile = serializer.validated_data.get('mobile')
         serializer.save(username=name, password=password, mobile=mobile)
+        profile=Profile(user=User.objects.get(username=name))
+        profile.save(self)
 
 
 class AddressListView(generics.ListAPIView):
@@ -205,18 +199,17 @@ class MyBuyGoodsList(generics.ListAPIView):
     serializer_class = GoodsSerializer
     permission_classes = (permissions.AllowAny,)
 
-
     def get_queryset(self):
-        '''
+        """
         :return: 返回购买商品的查询集
-        '''
+        """
         user_id = self.request.query_params.get('id', None)
         if user_id is not None:
             orders = Order.objects.filter(buyer_id=user_id, status="pending")
-            l=list()
+            goods_list=list()
             for o in orders:
-                l.append(o.goods)
-            queryset = l
+                goods_list.append(o.goods)
+            queryset = goods_list
         else:
             queryset = None
         return queryset
