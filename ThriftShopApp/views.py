@@ -111,11 +111,18 @@ class AddressListView(generics.ListAPIView):
 
 
 class ProfileRUView(generics.RetrieveUpdateAPIView):
+    '''
+    Profile表的查询、修改
+    按外键user的id
+    '''
     serializer_class = ProfileSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get_object(self):
-        profile = Profile.objects.get(user=User.objects.get(id=self.request.query_params('id', None)))
+        try:
+            profile = Profile.objects.get(user_id=self.request.query_params.get('id', None))
+        except:
+            profile=None
         return profile
 
 
