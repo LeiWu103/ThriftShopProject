@@ -12,10 +12,14 @@ from rest_framework.decorators import action
 import datetime
 from django.db.models import Q
 import random
+from drf_multiple_model.views import ObjectMultipleModelAPIView
 
 
 class GoodsDetail(generics.ListAPIView):
-    # 由商品id返回商品详细信息，无id返回全部商品信息
+    '''
+    由商品id返回商品详细信息
+    无id返回全部商品信息
+    '''
     serializer_class = GoodsDetailSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -33,7 +37,10 @@ class GoodsDetail(generics.ListAPIView):
 
 
 class GoodsListByCategory(generics.ListAPIView):
-    # 由分类id返回商品简略信息，无分类id返回所有简略信息
+    '''
+    由分类id返回商品简略信息
+    无分类id返回所有简略信息
+    '''
     serializer_class = GoodsSerializer
     permission_classes = (permissions.AllowAny,)
     filter_backends = (SearchFilter, OrderingFilter)
@@ -52,7 +59,9 @@ class GoodsListByCategory(generics.ListAPIView):
 
 
 class GoodsSelect(generics.ListAPIView):
-    # 商品查询接口，商品名、简介模糊查询
+    '''
+    商品查询接口，由商品名、简介模糊查询
+    '''
     serializer_class = GoodsSerializer
     permission_classes = (permissions.AllowAny,)
     filter_backends = (SearchFilter, OrderingFilter)
@@ -70,14 +79,14 @@ class GoodsSelect(generics.ListAPIView):
 
 
 class CategoryListView(generics.ListAPIView):
-    # 商品种类列表
+    '''商品种类列表'''
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (permissions.AllowAny,)
 
 
 class UserCreateView(generics.CreateAPIView):
-    # 注册
+    '''用户注册'''
     serializer_class = UserCreateSerializer
     queryset = User.objects.all()
     permission_classes = (permissions.AllowAny,)
@@ -91,6 +100,10 @@ class UserCreateView(generics.CreateAPIView):
 
 
 class AddressListView(generics.ListAPIView):
+    '''
+    地址列表
+    用户id查询地址表
+    '''
     serializer_class = AddressSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -113,6 +126,11 @@ class ProfileRUView(generics.RetrieveUpdateAPIView):
 
 
 class LoginView(generics.RetrieveAPIView):
+    '''
+    登录验证
+    正确则返回唯一用户id和用户名
+    否则返回空
+    '''
     serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -136,6 +154,10 @@ class OrderCreatView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
 
     def perform_create(self, serializer):
+        '''
+        :param serializer:
+        :return:
+        '''
         print(self.request.data)
         user = serializer.validated_data.get('buyer')
         goods = serializer.validated_data.get('goods')
