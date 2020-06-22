@@ -78,7 +78,7 @@ class Address(models.Model):
 class Profile(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE,verbose_name='用户')
     bio=models.CharField('签名',max_length=1000)
-    email=models.EmailField('邮箱',unique=True)
+    email=models.EmailField('邮箱')
     add_time = models.DateTimeField('添加时间', default=timezone.now())
     class Meta:
         db_table = 'Profile'
