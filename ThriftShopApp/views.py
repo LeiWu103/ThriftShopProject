@@ -202,11 +202,9 @@ class MyBuyGoodsList(generics.ListAPIView):
     返回购买成功的商品
     按订单生成时间排序
     '''
-    serializer_class = OrderSerializer
+    serializer_class = GoodsSerializer
     permission_classes = (permissions.AllowAny,)
-    filter_backends = (SearchFilter, OrderingFilter)
-    ordering_fields = ('__all__')
-    ordering = ('-add_time')
+
 
     def get_queryset(self):
         '''
@@ -215,8 +213,10 @@ class MyBuyGoodsList(generics.ListAPIView):
         user_id = self.request.query_params.get('id', None)
         if user_id is not None:
             orders = Order.objects.filter(buyer_id=user_id, status="pending")
-            queryset = orders
-            queryset.distinct()
+            l=list()
+            for o in orders:
+                l.append(o.goods)
+            queryset = l
         else:
             queryset = None
         return queryset
