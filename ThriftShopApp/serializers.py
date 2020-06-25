@@ -20,7 +20,7 @@ class GoodsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goods
-        fields = ('id', 'name', 'category', 'price', 'image', 'seller')
+        fields = ('id', 'name', 'category', 'price', 'image', 'seller','amount')
 
 
 class GoodsDetailSerializer(serializers.ModelSerializer):
@@ -38,13 +38,6 @@ class GoodsCreateSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    buyer = UserSerializer()
-    goods = GoodsSerializer()
-
-    class Meta:
-        model = Order
-        fields = ('__all__')
 
 
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
@@ -74,13 +67,20 @@ class AddressSerializer1(serializers.ModelSerializer):
         model = Address
         fields = ('id', 'signer', 'location', 'mobile')
 
+class OrderSerializer(serializers.ModelSerializer):
+    buyer = UserSerializer()
+    goods = GoodsSerializer()
+    address=AddressSerializer()
+    class Meta:
+        model = Order
+        fields = ('__all__')
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
     class Meta:
         model = Profile
-        fields = ('user', 'bio', 'location', 'mobile')
+        fields = ('user', 'bio', 'email', )
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
@@ -94,3 +94,13 @@ class OrderRUDSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id',)
+
+
+class ImageUploadSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = ('id','image',)
+
+
+

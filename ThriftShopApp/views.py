@@ -1,5 +1,19 @@
+import data as data
+from django.views.decorators.csrf import csrf_exempt
+from requests import Response
 from rest_framework import generics, permissions
+from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.parsers import MultiPartParser
+from rest_framework.decorators import parser_classes
+from django.views.decorators.csrf import csrf_exempt#不进行csrf验证
+
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+import base64,os
+from django.core.files.base import ContentFile
+
+
 from .serializers import *
 from .models import *
 from django.db.models import Q
@@ -165,7 +179,7 @@ class OrderCreatView(generics.CreateAPIView):
         message = serializer.validated_data.get('message')
         contact = serializer.validated_data.get('contact')
         address = serializer.validated_data.get('address')
-        serializer.save(buyer=user, cost=goods.price, status='pending', order_sn=random.randint(100000, 1000000),
+        serializer.save(buyer=user, cost=goods.price, status='待处理', order_sn=random.randint(100000, 1000000),
                         message=message, contact=contact, address=address)
         if goods.amount >= 1:
             goods.amount -= 1
@@ -198,29 +212,29 @@ class MySellGoodsList(generics.ListAPIView):
         return queryset
 
 
-# class MyBuyGoodsList(generics.ListAPIView):
-#     """
-#     根据用户id查询订单表
-#     返回购买成功的商品
-#     按订单生成时间排序
-#     """
-#     serializer_class = GoodsSerializer
-#     permission_classes = (permissions.AllowAny,)
-#
-#     def get_queryset(self):
-#         """
-#         :return: 返回购买商品的查询集
-#         """
-#         user_id = self.request.query_params.get('id', None)
-#         if user_id is not None:
-#             orders = Order.objects.filter(buyer_id=user_id, status="pending")
-#             goods_list=list()
-#             for o in orders:
-#                 goods_list.append(o.goods)
-#             queryset = goods_list
-#         else:
-#             queryset = None
-#         return queryset
+class MyBuyGoodsList(generics.ListAPIView):
+    """
+    根据用户id查询订单表
+    返回购买成功的商品
+    按订单生成时间排序
+    """
+    serializer_class = GoodsSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        """
+        :return: 返回购买商品的查询集
+        """
+        user_id = self.request.query_params.get('id', None)
+        if user_id is not None:
+            orders = Order.objects.filter(buyer_id=user_id, status="pending")
+            goods_list=list()
+            for o in orders:
+                goods_list.append(o.goods)
+            queryset = goods_list
+        else:
+            queryset = None
+        return queryset
 
 
 class ChangePassword(generics.RetrieveAPIView):
@@ -261,6 +275,10 @@ class AddressCreate(generics.CreateAPIView):
         serializer.save(user=user, signer=signer, location=location, mobile=mobile)
 
 
+
+
+
+
 class AddressRUD(generics.RetrieveUpdateDestroyAPIView):
     """地址修改"""
     serializer_class = AddressSerializer1
@@ -294,16 +312,30 @@ class GoodsCreate(generics.CreateAPIView):
         seller = serializer.validated_data.get('seller')
         serializer.save(name=name, amount=amount, click=0, price=price, brief=brief, image=image,
                         transaction=transaction, payment=payment, postage=postage, category=category, seller=seller)
+        print(serializer)
+
+
+# class ImageUpload(generics.CreateAPIView):
+#     serializer_class = ImageUploadSerializer
+#     permission_classes = (permissions.AllowAny,)
+#     queryset = Image.objects.all()
+#     def perform_create(self, serializer):
+#         print(1)
+#         img=serializer.validated_data.get('image')
+#         print(img)
+#         serializer.save(image=img)
 
 
 class OrderList(generics.ListAPIView):
-    """订单列表"""
+    """
+    订单列表
+    """
     serializer_class = OrderSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get_queryset(self):
-        buyer_id = self.request.query_params.get('buyerID', None)
-        queryset = Order.objects.filter(buyer_id=buyer_id)
+        sell_id = self.request.query_params.get('sellID', None)
+        queryset = Order.objects.filter(goods__seller_id=sell_id)
         return queryset
 
 
@@ -338,3 +370,44 @@ class OrderRUD(generics.UpdateAPIView):
             serializer.save(status="已完成")
         elif op == "cancel":
             serializer.save(status="已取消")
+
+
+class ImageUpload(generics.CreateAPIView):
+    serializer_class = ImageUploadSerializer
+    permission_classes = (permissions.AllowAny,)
+    queryset = Image.objects.all()
+    def perform_create(self, serializer):
+        img = str(serializer.validated_data.get('image'))
+        l=img.split(',',1)
+        img=l[1]
+        print(img)
+
+        with open('test.png', 'wb') as f:
+            f.write(base64.b64decode(img))
+
+        serializer.save(image='text.png')
+
+
+class GoodsRUD(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = GoodsSerializer
+    permission_classes = (permissions.AllowAny,)
+    queryset = Goods.objects.all()
+        # with open("C:\\Users\\wonai\\Desktop\\1.jpg", "rb") as f:  # 转为二进制格式
+        #     base64_data = base64.b64encode(f.read())  # 使用base64进行加密
+        #     print(base64_data)
+        #     file = open('E:\\qq文件\img.txt', 'wt')  # 写成文本格式
+        #     file.write(base64_data)
+        #     file.close()
+        # with open("E:\\qq文件\img.txt", "r") as f:
+        #     # str = "iVBORw0KGgoAAAANSUhEUgAAANwAAAAoCAIAAAAaOwPZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQuSURBVHhe7ZptmoMgDIR7rh6o5+lpvEwP01XUGshAokgX+8z+7PKRTF6SoN7e/KMCnSlw68wemkMF3oSSEHSnAKHsLiQ0iFCSge4UIJTdhYQGEUoy0J0ChLK7kNAgQkkGulOAUHYXEhpEKMlAdwpcG8rhcRv/HkN3stIgW4F88DYoX89nObjmANuOc0eMXpHHcyX9+mowhgHKmdlChM0BZzvzet6DSSW7xjEWk8Hu+/O1x7zF1237/Uu4t/O46V6sZuARoZb9KqbO7On4rJlykqcYYnNAjSbx3Gmrj6WTzxirVlA+90F82G+nm4fX3zOxgqyKqRaUU7b8FpRDOeyjJa7k5oByT1yWse4mxfDC3NrrprnQtQeUMuUXoURmCGHdKfl/oTS8MElxu2mudO0BXUCZL8efVGU0EmsQjkGpM2H8y/CwGtW1C3el8ywxhHKWxgOlaPNj0VcRRW+OoiKvCXF0o6YeXWLQDaNQyMf1Clhsi22D9HUNXOBCVZamaBmiO5BxRdRQOt3M3oFUAD4/HDolSChx7AvXzRIJQtgsUfMu6HB+HglNLc5d5KiwpcAqTH7Idk/lvLD9Z0rUx4vYWL2UJ4WY6XbdL91ML57+EjsRNEMnw/LCrKklN9NNkbuLvKsdabjM/ZMByh+PDWuuw6kDEYXPzeSfzGARlNG1M1ENRCfGLlUuJ5MVTg+UyxGzC+1+KN/DkDyuTSVbqo7vNnagfKPTrH9b8pQtgQ/PRCifDTaUJaIWw8adUycklLrcppkyCZfkJ5cYlSZnQTkmsYf58OYAlMpg6JnlhYlC9uxhIdWvbr1NS8Ahc9pgQlkkai3fOorVUK4JGeYTJIgVTm+mnCqrmSfOgDJ0mOlOlhcmClk3M0KmPzeF0mnDGVB6LjqbmKB8p5GRQ34DStRCdpEpp5MRNWRNocwsjk9i7nyqugzPYTWUSZuqe0qVucAT5tgH9ITmxEdCdihjpcCVAgfI8uJ4pgx3K3UhgBeRQ9dtbJmjp1TnYmsKoSH1UGqKE23mxlrsri4yKsuAFnZ5BrAugypw0/IdSvHmxHJbEI6lREzj0asuOc7TR8BONdd9pNKCo4LRNY9CdgCEXjqObDhQvsFpy7z7DsqHP9khxp9DzNeKbSR+Iy3/n31tqVFYe17xFUZkTu507+4px4USFwBRm32lbzFyXphgRMtn3cwqqaef8a0UrMHlaJYM8RC1Iq2DeOXvKUdVjALmzromST8+4N+Egm9rrwzl/DpAVlddnE9su36Jyx6ECtkUxufaUMJOzfwQsxldUbnTLyO/ckCcNsS112yDmkkGF/4xKL8rHndrowChbKMrV61QgFBWiMepbRQglG105aoVChDKCvE4tY0ChLKNrly1QgFCWSEep7ZRgFC20ZWrVihAKCvE49Q2ChDKNrpy1QoF/gDXIhmWmc+CSAAAAABJRU5ErkJggg=="
+        #     imgdata = base64.b64decode(f.read())
+        #     file = open('1.jpg', 'wb')
+        #     file.write(imgdata)
+        #     file.close()
+
+
+class MyOrderList(generics.RetrieveUpdateDestroyAPIView):
+    def get_object(self):
+        sell_id=self.request.query_params.get('sellID',None)
+        obj=Order.objects.get(sell_id=sell_id)
+    pass

@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^OrderCreate/$', views.OrderCreatView.as_view(), name='Order-detail'),
     # 个人中心路由
     url(r'^MySellGoods/$', views.MySellGoodsList.as_view(), name='Goods-detail'),
-    # url(r'^MyBuyGoods/$',views.MyBuyGoodsList.as_view(),name='Goods-detail'),
+    url(r'^MyBuyGoods/$',views.MyBuyGoodsList.as_view(),name='Goods-detail'),
     url(r'^ChangePassword/$', views.ChangePassword.as_view(), name='User-detail'),
     url(r'^AddressCreate/$', views.AddressCreate.as_view(), name='Address-detail'),
     url(r'^AddressRUD/(?P<pk>[0-9]+)/$', views.AddressRUD.as_view(), name='Address-detail'),
@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^OrderList/$', views.OrderList.as_view(), name='Order-detail'),
     url(r'^OrderDetail/$', views.OrderDetail.as_view(), name='Order-detail'),
     url(r'^OrderRUD/(?P<pk>[0-9]+)/$', views.OrderRUD.as_view(), name='Order-detail'),
+    url(r'^ImageUpload/$', views.ImageUpload.as_view(), name='Image-detail'),
+    url(r'^GoodsRUD/(?P<pk>[0-9]+)/$', views.GoodsRUD.as_view(), name='Goods-detail'),
 ]

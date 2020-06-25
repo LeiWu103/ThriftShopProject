@@ -96,3 +96,10 @@ class Profile(models.Model):
         db_table = 'Profile'
         verbose_name = '简介'
         verbose_name_plural = verbose_name
+
+class Image(models.Model):
+    image=models.ImageField('商品图片', upload_to='images')
+    class Meta:
+        db_table = 'Image'
+        verbose_name = '图片'
+        verbose_name_plural = verbose_name
