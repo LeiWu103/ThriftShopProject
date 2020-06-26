@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^OrderRUD/(?P<pk>[0-9]+)/$', views.OrderRUD.as_view(), name='Order-detail'),
     url(r'^ImageUpload/$', views.ImageUpload.as_view(), name='Image-detail'),
     url(r'^GoodsRUD/(?P<pk>[0-9]+)/$', views.GoodsRUD.as_view(), name='Goods-detail'),
+    url(r'^ProfileEdit/$', views.ProfileEdit.as_view(), name='profile-detail'),
 ]

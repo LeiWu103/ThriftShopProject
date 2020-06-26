@@ -35,7 +35,7 @@ class GoodsDetailSerializer(serializers.ModelSerializer):
 class GoodsCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goods
-        fields = ('__all__')
+        fields = ('name','amount','price','brief','transaction','postage','category','seller','code')
 
 
 
@@ -43,7 +43,7 @@ class GoodsCreateSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'mobile')
+        fields = ('id', 'username', 'password', 'mobile', 'account')
 
 
 class ProfileCreateSerializer(serializers.HyperlinkedModelSerializer):
@@ -65,7 +65,7 @@ class AddressSerializer(serializers.ModelSerializer):
 class AddressSerializer1(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ('id', 'signer', 'location', 'mobile')
+        fields = ('id', 'signer', 'location', 'mobile','user')
 
 class OrderSerializer(serializers.ModelSerializer):
     buyer = UserSerializer()

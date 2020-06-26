@@ -43,9 +43,9 @@ class Goods(models.Model):
     click = models.IntegerField('点击量', default=0)
     price = models.FloatField('单价')
     brief = models.CharField('简介', max_length=1000)
-    image = models.ImageField('商品图片', upload_to='images')
+    image = models.ImageField('商品图片')
     transaction = models.SmallIntegerField('交易方式')
-    payment = models.BooleanField('交易方式', default=True)
+    code = models.TextField('图片编码')
     postage = models.FloatField('运费')
     add_time = models.DateTimeField('加入时间', default=timezone.now())
 
@@ -98,7 +98,7 @@ class Profile(models.Model):
         verbose_name_plural = verbose_name
 
 class Image(models.Model):
-    image=models.ImageField('商品图片', upload_to='images')
+    image=models.TextField('商品图片')
     class Meta:
         db_table = 'Image'
         verbose_name = '图片'
