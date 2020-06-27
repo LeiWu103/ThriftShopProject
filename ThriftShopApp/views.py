@@ -100,10 +100,10 @@ class UserCreateView(generics.CreateAPIView):
         name = serializer.validated_data.get('username')
         password = serializer.validated_data.get('password')
         mobile = serializer.validated_data.get('mobile')
-        account = "1000" + str(User.objects.count() + 1)
+        account = str(10000 + User.objects.count())
         serializer.save(username=name, password=password, mobile=mobile, account=account)
-        profile = Profile(user=User.objects.get(username=name))
-        profile.save(self)
+        profile = Profile(user=User.objects.get(account=account))
+        profile.save()
 
 
 class AddressListView(generics.ListAPIView):
@@ -151,17 +151,18 @@ class ProfileEdit(generics.RetrieveUpdateAPIView):
         try:
             print(self.request.query_params)
             profile = Profile.objects.get(user_id=self.request.query_params.get('userID', None))
-            username=self.request.query_params.get('username',None)
-            bio=self.request.query_params.get('bio',None)
-            email=self.request.query_params.get('email',None)
-            profile.user.username=username
+            username = self.request.query_params.get('username', None)
+            bio = self.request.query_params.get('bio', None)
+            email = self.request.query_params.get('email', None)
+            profile.user.username = username
             profile.user.save()
-            profile.bio=bio
-            profile.email=email
+            profile.bio = bio
+            profile.email = email
             profile.save()
         except:
             profile = None
         return profile
+
 
 class LoginView(generics.RetrieveAPIView):
     """
@@ -187,6 +188,7 @@ class LoginView(generics.RetrieveAPIView):
 
 
 class OrderCreatView(generics.CreateAPIView):
+    """创建订单"""
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
     permission_classes = (permissions.AllowAny,)
@@ -323,18 +325,18 @@ class GoodsCreate(generics.CreateAPIView):
         brief = serializer.validated_data.get('brief')
         code = serializer.validated_data.get('code')
         image_str = str(code)
-        image_str=image_str.split(',')[1]
-        image_name='media/images/'+str(random.randint(1,100000000))+'.png'
+        image_str = image_str.split(',')[1]
+        image_name = 'media/images/' + str(random.randint(1, 100000000)) + '.png'
         with open(image_name, 'wb') as f:
             f.write(base64.b64decode(image_str))
-        image_name=image_name[6:100]
+        image_name = image_name[6:100]
         transaction = serializer.validated_data.get('transaction')
 
         postage = serializer.validated_data.get('postage')
         category = serializer.validated_data.get('category')
         seller = serializer.validated_data.get('seller')
         serializer.save(name=name, amount=amount, click=0, price=price, brief=brief, image=image_name,
-                        transaction=transaction, postage=postage, category=category, seller=seller,code=code)
+                        transaction=transaction, postage=postage, category=category, seller=seller, code=code)
         print(serializer)
 
 
@@ -363,6 +365,7 @@ class OrderList(generics.ListAPIView):
 
 
 class OrderDetail(generics.RetrieveAPIView):
+    """订单详情"""
     serializer_class = OrderSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -443,4 +446,16 @@ class MyOrderList(generics.RetrieveUpdateDestroyAPIView):
         sell_id = self.request.query_params.get('sellID', None)
         obj = Order.objects.get(sell_id=sell_id)
 
-    pass
+
+class CheckMobile(generics.RetrieveAPIView):
+    """确认手机号"""
+    serializer_class = UserSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_object(self):
+        pre_mobile = self.request.query_params.get('mobile', None)
+        try:
+            user = User.objects.get(mobile=pre_mobile)
+            return user
+        except:
+            return None

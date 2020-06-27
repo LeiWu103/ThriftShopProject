@@ -36,6 +36,7 @@ class Category(models.Model):
 
 
 class Goods(models.Model):
+
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='分类')
     seller = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name='卖家')
     name = models.CharField('商品名', max_length=30)
@@ -73,6 +74,7 @@ class Order(models.Model):
 
 
 class Address(models.Model):
+
     user = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name='用户')
     signer = models.CharField('收件人', max_length=20)
     location = models.CharField('位置', max_length=500)
@@ -87,6 +89,7 @@ class Address(models.Model):
 
 
 class Profile(models.Model):
+
     user = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name='用户')
     bio = models.CharField('签名', max_length=1000)
     email = models.EmailField('邮箱')
@@ -98,6 +101,7 @@ class Profile(models.Model):
         verbose_name_plural = verbose_name
 
 class Image(models.Model):
+
     image=models.TextField('商品图片')
     class Meta:
         db_table = 'Image'

@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^ProfileRUView/$', views.ProfileRUView.as_view(), name='Profile-detail'),
     url(r'^LoginInfo/$', views.LoginView.as_view(), name='Login-detail'),
     url(r'^OrderCreate/$', views.OrderCreatView.as_view(), name='Order-detail'),
+    url(r'^CheckMobile/$', views.CheckMobile.as_view(), name='Order-detail'),
     # 个人中心路由
     url(r'^MySellGoods/$', views.MySellGoodsList.as_view(), name='Goods-detail'),
     url(r'^MyBuyGoods/$',views.MyBuyGoodsList.as_view(),name='Goods-detail'),

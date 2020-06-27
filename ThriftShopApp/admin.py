@@ -17,6 +17,7 @@ class GoodsAdmin(admin.ModelAdmin):
     readonly_fields = ('add_time',)
     ordering = ('-add_time',)
     list_display_links = ('id', 'name')
+    exclude = ('code',)
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)

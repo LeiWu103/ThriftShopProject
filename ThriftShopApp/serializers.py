@@ -43,7 +43,7 @@ class GoodsCreateSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'mobile', 'account')
+        fields = ('id', 'username', 'password', 'mobile' ,'account')
 
 
 class ProfileCreateSerializer(serializers.HyperlinkedModelSerializer):
