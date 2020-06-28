@@ -100,7 +100,7 @@ class UserCreateView(generics.CreateAPIView):
         name = serializer.validated_data.get('username')
         password = serializer.validated_data.get('password')
         mobile = serializer.validated_data.get('mobile')
-        account = str(10000 + User.objects.count())
+        account = str(10000 + User.objects.count()+1)
         serializer.save(username=name, password=password, mobile=mobile, account=account)
         profile = Profile(user=User.objects.get(account=account))
         profile.save()
